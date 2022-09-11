@@ -78,9 +78,28 @@ app.post("/cadastro", (req, res) => {
 });
 
 
-app.get("/employees", (req, res) => {
-  execSQLQuery("SELECT * FROM funcionario", res)
-});
+app.get('/edit', (req, res) =>{
+  sql.query(`
+      SELECT 
+    	id_usuario,
+        id_celular,
+        nr_cpf,
+        ds_nome_completo,
+    	FORMAT (dt_nascimento,'dd-MM-yy') as dt_nascimento,
+        st_visao,
+        ds_email,
+        st_cadastro,
+        dt_cadastro,
+        dt_atualizacao
+      from [dbo].[TB_USUARIO]
+  `, (error, result) =>{
+    if(error){
+      throw error
+    }
+    users = result.recordset
+    return res.render("edit.html", {users})
+  })
+})
 
 app.put("/update", (req, res) => {
   const id = req.body.id;
@@ -92,12 +111,29 @@ app.put("/update", (req, res) => {
 app.post('/delete/api/',(req, res) => {
   const id = req.body.reqDelete
   console.log(id);
-  
-  //execSQLQuery('DELETE TB_USUARIO WHERE id =' + id, res);
+  execSQLQuery('DELETE TB_USUARIO WHERE id_usuario =' + id, res);
+  res.redirect('/usuarios')
 });
+
+app.post('/update/api/',(req, res) => {
+  const id = req.body.reqDelete
+  const name = req.body.nome;
+  const date = req.body.dateNasc;
+  const cpf = req.body.cpf;
+  const email = req.body.email;
+  const visao = req.body.visao;
+
+  console.log(req.body)
+
+  execSQLQuery(`UPDATE TB_USUARIO SET ds_nome_completo = '${name}', nr_cpf = '${cpf}', ds_email = '${email}', st_visao = '${visao}' where id_usuario = ${id}`, res);
+  res.redirect('/usuarios')
+});
+
+
 
 app.delete("/delete/:id", (req, res) => {
   execSQLQuery('DELETE TB_USUARIO WHERE id_usuario =' + req.params.id, res);
+  res.redirect('/usuarios')
 });
 
 
