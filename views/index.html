@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cadastro de Funcionários</title>
+    <title>EuPago!</title>
     <link href="./public/style.css" />
     <link
       rel="stylesheet"
@@ -26,7 +26,7 @@
           <a class="nav-link disabled" href="#">Transações</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link disabled" href="#">Histórico Transações</a>  
+          <a class="nav-link disabled" href="#">Histórico Transações</a>
         </li>
       </ul>
       <div class="d-flex justify-content-center">
@@ -63,9 +63,9 @@
             <div class="form-group">
               <label for="">CPF</label>
               <input
-                type="number"
+                type="text"
                 class="form-control"
-                id=""
+                id="key"
                 placeholder="CPF"
                 name="cpf"
                 required
@@ -83,19 +83,38 @@
               />
             </div>
             <div class="form-group">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <label class="input-group-text" for="inputGroupSelect01">Visão</label>
-                    </div>
-                    <select class="custom-select" id="inputGroupSelect01" name="visao">
-                      <option selected>Escolha...</option>
-                      <option value="Boa">Boa</option>
-                      <option value="Média">Média</option>
-                      <option value="Ruim">Ruim</option>
-                    </select>
-                  </div>
+              <label for="">Celular</label>
+              <input
+                type="number""
+                class="form-control"
+                id=""
+                placeholder="DDD + NUMERO"
+                name="celular"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="inputGroupSelect01"
+                    >Visão</label
+                  >
+                </div>
+                <select
+                  class="custom-select"
+                  id="inputGroupSelect01"
+                  name="visao"
+                >
+                  <option selected>Escolha...</option>
+                  <option value="Boa">Boa</option>
+                  <option value="Média">Média</option>
+                  <option value="Ruim">Ruim</option>
+                </select>
               </div>
-            <button type="submit" class="btn btn-outline-success">Cadastrar</button>
+            </div>
+            <button type="submit" class="btn btn-outline-success">
+              Cadastrar
+            </button>
           </form>
         </div>
       </div>
@@ -107,7 +126,7 @@
         padding: 10px;
       }
 
-      form input{
+      form input {
         min-width: 300px;
         max-width: 300px;
       }
@@ -140,22 +159,86 @@
         width: 100%;
       }
 
-      .hide{
-          visibility: hidden;
+      .hide {
+        visibility: hidden;
+      }
+    </style>
+
+    <script>
+      document.querySelector(".btn").addEventListener("click", function () {
+        document.querySelector(".alert").classList.toggle("hide");
+      });
+      // Forçar inicio com Pessoa fisica CPF
+      document
+        .getElementById("key")
+        .setAttribute(
+          "onkeypress",
+          "mascaraMutuario(this,Cpf),limitarInputCpf(this)"
+        );
+     
+      document.getElementById("key").setAttribute("onblur", "");
+
+      function mascaraMutuario(o, f) {
+        v_obj = o;
+        v_fun = f;
+        setTimeout("execmascara()", 1);
+      }
+
+      function execmascara() {
+        v_obj.value = v_fun(v_obj.value);
+      }
+
+      // Mascara do CPF
+      function Cpf(v) {
+        //Remove tudo o que não é dígito
+        v = v.replace(/\D/g, "");
+
+        //Coloca um ponto entre o terceiro e o quarto dígitos
+        v = v.replace(/(\d{3})(\d)/, "$1.$2");
+
+        //Coloca um ponto entre o terceiro e o quarto dígitos
+        //de novo (para o segundo bloco de números)
+        v = v.replace(/(\d{3})(\d)/, "$1.$2");
+
+        //Coloca um hífen entre o terceiro e o quarto dígitos
+        v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+
+        return v;
+      }
+
+      function limitarInputCpf(obj) {
+        obj.value = obj.value.substring(0, 13);
       }
 
 
-    </style>
+      // Função que permite apenas teclas numéricas
+      // Deve ser chamada no evento onKeyPress desta forma
+      // return (soNums(event));
+      function soNums(e) {
+        if (document.all) {
+          var evt = event.keyCode;
+        } else {
+          var evt = e.charCode;
+        }
+        if (evt < 20 || (evt > 47 && evt < 58)) {
+          return true;
+        }
+        return false;
+      }
 
+      //	função que mascara o CPF
+      function maskCPF(CPF) {
+        return (
+          CPF.substring(0, 3) +
+          "." +
+          CPF.substring(3, 6) +
+          "." +
+          CPF.substring(6, 9) +
+          "-" +
+          CPF.substring(9, 11)
+        );
+      }
 
-    <script>
-    document
-        .querySelector('.btn')
-        .addEventListener("click", function() {
-            document
-                .querySelector('.alert')
-                .classList.toggle('hide')
-            })
     </script>
   </body>
 </html>

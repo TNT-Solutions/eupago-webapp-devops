@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cadastro de Funcionários</title>
+    <title>EuPago!</title>
     <link href="./public/style.css" />
     <link
       rel="stylesheet"
@@ -38,17 +38,18 @@
         <form action="/delete/api/" method="post">
             <input type="hidden" name="reqDelete" value="{{user.id_usuario}}"/>
             <div class="card mb-4 bg-dark" style="min-width: 18rem; max-width: 18rem">
-            <div class="card-header">{{user.ds_nome_completo}}</div>
-            <div class="card-body">
-              <h6>Data Nascimento: <span class="badge badge badge-light">{{user.dt_nascimento}}</span></h4>
-              <h6>CPF: <span class="badge badge badge-light">{{user.nr_cpf}}</span></h4>
-              <h6>Email: <span class="badge badge badge-light">{{user.ds_email}}</span></h4>
-              <h6>Visão: <span class="badge badge badge-light">{{user.st_visao}}</span></h4>
-            <div class="card-footer">
-                <a href="/edit">Editar</a>
-                <button class="btn btn-outline-danger">Delete</button>
-            </div>
-            </div>
+              <div class="card-header">{{user.ds_nome_completo}}</div>
+              <div class="card-body">
+                <h6>Data Nascimento: <span class="badge badge badge-light">{{user.dt_nascimento}}</span></h4>
+                <h6>CPF: <span class="badge badge badge-light">{{user.nr_cpf}}</span></h4>
+                <h6>Email: <span class="badge badge badge-light">{{user.ds_email}}</span></h4>
+                <h6>Celular: <span class="badge badge badge-light">{{user.nr_celular}}</span></h4>
+                <h6>Visão: <span class="badge badge badge-light">{{user.st_visao}}</span></h4>
+                <div class="card-footer">
+                    <a href="/edit">Editar</a>
+                    <button class="btn btn-outline-danger">Delete</button>
+                </div>
+              </div>
           </div>
         </form>
       </div>
@@ -67,6 +68,10 @@
       h2 {
         margin-top: 40px;
         text-align: center;
+      }
+
+      .card{
+        background-color: rgb(219, 219, 219);
       }
 
       .card h6{

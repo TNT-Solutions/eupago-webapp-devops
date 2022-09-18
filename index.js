@@ -43,22 +43,25 @@ app.get('/', (req, res) =>{
 app.get('/usuarios', (req, res) =>{
   sql.query(`
       SELECT 
-    	id_usuario,
-        id_celular,
-        nr_cpf,
-        ds_nome_completo,
-    	FORMAT (dt_nascimento,'dd/MM/yyyy') as dt_nascimento,
-        st_visao,
-        ds_email,
-        st_cadastro,
-        dt_cadastro,
-        dt_atualizacao
-      from [dbo].[TB_USUARIO]
+        u.id_usuario,
+        u.id_celular,
+        u.nr_cpf,
+        u.ds_nome_completo,
+    	  FORMAT (dt_nascimento,'dd/MM/yyyy') as dt_nascimento,
+        u.st_visao,
+        u.ds_email,
+        u.st_cadastro,
+        u.dt_cadastro,
+        u.dt_atualizacao,
+        c.nr_celular
+      from TB_USUARIO u
+      join TB_CELULAR c on u.id_celular = c.id_celular
   `, (error, result) =>{
     if(error){
       throw error
     }
     users = result.recordset
+    //console.log(users)
     return res.render("usuarios.html", {users})
   })
 })
@@ -67,31 +70,48 @@ app.get('/usuarios', (req, res) =>{
 app.post("/cadastro", (req, res) => {
   const name = req.body.name;
   const date = req.body.date;
-  const cpf = req.body.cpf;
+  const cpfString = req.body.cpf;
+  let cpf = cpfString.replace(/\D/g, "");
   const email = req.body.email;
+  const celularString = req.body.celular;
+  const celularDDD = celularString.slice(0, 2)
+  const celular = celularString.slice(2)
   const visao = req.body.visao;
 
-  execSQLQuery(`INSERT INTO TB_USUARIO(id_celular, nr_cpf, ds_nome_completo, dt_nascimento, st_visao, ds_email, st_cadastro, dt_cadastro) 
-  VALUES('1', '${cpf}','${name}','${date}','${visao}','${email}', '1', '2022-08-09')`, res);
+  console.log(req.body)
+  //console.log(celularDDD)
+  //console.log(celular)
 
-  return res.redirect('/usuarios')
+  sql.query(`INSERT INTO TB_CELULAR (nr_ddd, nr_celular) VALUES (${celularDDD}, ${celular})`)
+
+
+  setTimeout(() => { 
+    execSQLQuery(`INSERT INTO TB_USUARIO(id_celular, nr_cpf, ds_nome_completo, dt_nascimento, st_visao, ds_email, st_cadastro, dt_cadastro) 
+    VALUES((SELECT id_celular FROM TB_CELULAR where nr_celular = '${celular}'), '${cpf}','${name}','${date}','${visao}','${email}', '1', '2022-08-09')`, res);
+    return res.redirect('/usuarios')
+   }, 1000);
+
+
+  
 });
 
 
 app.get('/edit', (req, res) =>{
   sql.query(`
-      SELECT 
-    	id_usuario,
-        id_celular,
-        nr_cpf,
-        ds_nome_completo,
-    	FORMAT (dt_nascimento,'dd-MM-yy') as dt_nascimento,
-        st_visao,
-        ds_email,
-        st_cadastro,
-        dt_cadastro,
-        dt_atualizacao
-      from [dbo].[TB_USUARIO]
+    SELECT 
+      u.id_usuario,
+      u.id_celular,
+      u.nr_cpf,
+      u.ds_nome_completo,
+      FORMAT (dt_nascimento,'dd/MM/yyyy') as dt_nascimento,
+      u.st_visao,
+      u.ds_email,
+      u.st_cadastro,
+      u.dt_cadastro,
+      u.dt_atualizacao,
+      c.nr_celular
+    from TB_USUARIO u
+    join TB_CELULAR c on u.id_celular = c.id_celular
   `, (error, result) =>{
     if(error){
       throw error
@@ -102,31 +122,47 @@ app.get('/edit', (req, res) =>{
 })
 
 app.put("/update", (req, res) => {
-  const id = req.body.id;
-  const wage = req.body.wage;
-  execSQLQuery(`UPDATE funcionario SET wage = '${wage}' where id = ${id}`, res);
-});
-
-
-app.post('/delete/api/',(req, res) => {
-  const id = req.body.reqDelete
-  console.log(id);
-  execSQLQuery('DELETE TB_USUARIO WHERE id_usuario =' + id, res);
-  res.redirect('/usuarios')
-});
-
-app.post('/update/api/',(req, res) => {
   const id = req.body.reqDelete
   const name = req.body.nome;
   const date = req.body.dateNasc;
   const cpf = req.body.cpf;
   const email = req.body.email;
   const visao = req.body.visao;
-
-  console.log(req.body)
-
   execSQLQuery(`UPDATE TB_USUARIO SET ds_nome_completo = '${name}', nr_cpf = '${cpf}', ds_email = '${email}', st_visao = '${visao}' where id_usuario = ${id}`, res);
   res.redirect('/usuarios')
+});
+
+
+app.post('/delete/api/',(req, res) => {
+  const id = req.body.reqDelete
+  //console.log(id);
+  execSQLQuery('DELETE TB_USUARIO WHERE id_usuario =' + id, res);
+  res.redirect('/usuarios')
+});
+
+app.post('/update/api/',(req, res) => {
+  const id = req.body.reqDelete
+  const id_celular = req.body.reqCelular
+
+  const name = req.body.nome;
+  const date = req.body.dateNasc;
+  const cpf = req.body.cpf;
+  const email = req.body.email;
+  const visao = req.body.visao;
+  const celular = req.body.celular;
+
+
+  sql.query(`update TB_CELULAR set nr_celular = ${celular} where id_celular = ${id_celular}
+  `, (error, result) =>{
+    if(error){
+      throw error
+    }
+  })
+
+  setTimeout(() => { 
+    execSQLQuery(`UPDATE TB_USUARIO SET ds_nome_completo = '${name}', nr_cpf = '${cpf}', ds_email = '${email}', st_visao = '${visao}' where id_usuario = ${id}`, res);
+    res.redirect('/usuarios')
+  }, 1000);
 });
 
 
