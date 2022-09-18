@@ -7,14 +7,12 @@ const sql = require('mssql');
 const app = express();
 
 const bodyParser = require('body-parser');
+const req = require('express/lib/request');
 
 nunjucks.configure('views', {
   autoescape: true,
   express: app
 });
-
-app.set('view engine', 'html');
-
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -36,7 +34,6 @@ function execSQLQuery(sqlQry, res){
              .then(result => res.json(result.recordset))
              .catch(err => res.json(err));
 }
-
 
 
 app.get('/', (req, res) =>{
@@ -69,6 +66,36 @@ app.get('/usuarios', (req, res) =>{
   })
 })
 
+
+app.post("/cadastro", (req, res) => {
+  const name = req.body.name;
+  const date = req.body.date;
+  const cpfString = req.body.cpf;
+  let cpf = cpfString.replace(/\D/g, "");
+  const email = req.body.email;
+  const celularString = req.body.celular;
+  const celularDDD = celularString.slice(0, 2)
+  const celular = celularString.slice(2)
+  const visao = req.body.visao;
+
+  console.log(req.body)
+  //console.log(celularDDD)
+  //console.log(celular)
+
+  sql.query(`INSERT INTO TB_CELULAR (nr_ddd, nr_celular) VALUES (${celularDDD}, ${celular})`)
+
+
+  setTimeout(() => { 
+    execSQLQuery(`INSERT INTO TB_USUARIO(id_celular, nr_cpf, ds_nome_completo, dt_nascimento, st_visao, ds_email, st_cadastro, dt_cadastro) 
+    VALUES((SELECT id_celular FROM TB_CELULAR where nr_celular = '${celular}'), '${cpf}','${name}','${date}','${visao}','${email}', '1', '2022-08-09')`, res);
+    return res.redirect('/usuarios')
+   }, 1000);
+
+
+  
+});
+
+
 app.get('/edit', (req, res) =>{
   sql.query(`
     SELECT 
@@ -93,58 +120,6 @@ app.get('/edit', (req, res) =>{
     return res.render("edit.html", {users})
   })
 })
-
-
-app.get('/transacoes', (req, res) =>{
-  sql.query(`
-    SELECT 
-      id_trasacao,
-      id_compra,
-      FORMAT (dt_transacao,'dd/MM/yyyy') as dt_transacao,
-      st_parcelado,
-      nr_parcelas,
-      vl_parcelas,
-      st_transacao,
-      vl_total_cartao
-    from TB_TRANSACAO 
-    `, (error, result) =>{
-  if(error){
-    throw error
-  }
-  transacoes = result.recordset
-  console.log(transacoes)
-  return res.render("transacoes.html", {transacoes})
-  })
-})
-
-
-
-app.post("/cadastro", (req, res) => {
-  const name = req.body.name;
-  const date = req.body.date;
-  const cpfString = req.body.cpf;
-  let cpf = cpfString.replace(/\D/g, "");
-  const email = req.body.email;
-  const celularString = req.body.celular;
-  const celularDDD = celularString.slice(0, 2)
-  const celular = celularString.slice(2)
-  const visao = req.body.visao;
-
-  console.log(req.body)
-  //console.log(celularDDD)
-  //console.log(celular)
-
-  sql.query(`INSERT INTO TB_CELULAR (nr_ddd, nr_celular) VALUES (${celularDDD}, ${celular})`)
-  sql.query(`INSERT INTO TB_USUARIO(id_celular, nr_cpf, ds_nome_completo, dt_nascimento, st_visao, ds_email, st_cadastro, dt_cadastro) 
-  VALUES(2, '${cpf}','${name}','${date}','${visao}','${email}', '1', '2022-08-09')`)
-  // execSQLQuery(`INSERT INTO TB_USUARIO(id_celular, nr_cpf, ds_nome_completo, dt_nascimento, st_visao, ds_email, st_cadastro, dt_cadastro) 
-  // VALUES((SELECT id_celular FROM TB_CELULAR where nr_celular = '${celular}'), '${cpf}','${name}','${date}','${visao}','${email}', '1', '2022-08-09')`, res);
-  setTimeout(() => { 
-    return res.redirect('/usuarios')
-  }, 1000);
-});
-
-
 
 app.put("/update", (req, res) => {
   const id = req.body.reqDelete

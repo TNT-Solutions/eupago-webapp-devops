@@ -20,20 +20,6 @@ CREATE TABLE TB_USUARIO (
 	CONSTRAINT PK_USUARIO PRIMARY KEY (id_usuario)
 );
 
-CREATE TABLE TB_TRANSACAO (
-    id_trasacao    int identity,
-    id_compra       int NOT NULL,
-    dt_transacao    DATETIME NOT NULL,
-    st_parcelado    CHAR(1) NOT NULL,
-    nr_parcelas     numeric(2),
-    vl_parcelas     numeric(12, 2),
-    st_transacao    VARCHAR(100) NOT NULL,
-    vl_total_cartao numeric(12, 2) NOT NULL
-	CONSTRAINT tb_transacao_pk PRIMARY KEY ( id_trasacao )
-);
-
-
-
 
 
 ALTER TABLE TB_USUARIO ADD CONSTRAINT un_cpf_usuario UNIQUE ( nr_cpf );
@@ -52,8 +38,15 @@ INSERT INTO TB_CELULAR (nr_ddd, nr_celular) VALUES (21, 977776666);
 
 
 
-INSERT INTO TB_USUARIO ( id_celular, nr_cpf, ds_nome_completo, dt_nascimento, st_visao, ds_email, st_cadastro, dt_cadastro) 
-VALUES (
+INSERT INTO TB_USUARIO (
+    id_celular,
+    nr_cpf,
+    ds_nome_completo,
+    dt_nascimento,
+    st_visao,
+    ds_email,
+    st_cadastro,
+    dt_cadastro) VALUES (
     2,
     12312312387,
     'Tony Stark',
@@ -67,18 +60,4 @@ select * from [dbo].[TB_USUARIO]
 
 
 
-INSERT INTO TB_TRANSACAO(
-    id_compra,
-    dt_transacao,
-    st_parcelado,
-    nr_parcelas,
-    vl_parcelas,
-    st_transacao,
-    vl_total_cartao) VALUES (
-    2,
-    GETDATE(),
-    1,
-    3,
-    87500,
-    'APROVADO',
-    262500);
+
