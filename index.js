@@ -139,6 +139,7 @@ app.post("/cadastro", (req, res) => {
   VALUES(2, '${cpf}','${name}','${date}','${visao}','${email}', '1', '2022-08-09')`)
   // execSQLQuery(`INSERT INTO TB_USUARIO(id_celular, nr_cpf, ds_nome_completo, dt_nascimento, st_visao, ds_email, st_cadastro, dt_cadastro) 
   // VALUES((SELECT id_celular FROM TB_CELULAR where nr_celular = '${celular}'), '${cpf}','${name}','${date}','${visao}','${email}', '1', '2022-08-09')`, res);
+  console.log(req.body)
   setTimeout(() => { 
     return res.redirect('/usuarios')
   }, 1000);
