@@ -1,4 +1,0 @@
-{
-    "appService.defaultWebAppToDeploy": "/subscriptions/b48822bb-55d0-430d-832c-813d00e081aa/microsoft.web/sites/subscriptions/b48822bb-55d0-430d-832c-813d00e081aa/resourceGroups/rg-bcosql/providers/Microsoft.Web/sites/nodejs-sprint-application",
-    "appService.deploySubpath": "."
-}
