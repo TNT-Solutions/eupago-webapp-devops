@@ -1,3 +1,16 @@
+
+-- Criação das tabelas
+CREATE TABLE TB_TRANSACAO (
+    id_trasancao    int identity,
+    id_compra       numeric(4) NOT NULL,
+    dt_transacao    DATETIME NOT NULL,
+    st_parcelado    CHAR(1) NOT NULL,
+    nr_parcelas     NUMERIC(2),
+    vl_parcelas     NUMERIC(12, 2),
+    st_transacao    VARCHAR(100) NOT NULL,
+    vl_total_cartao NUMERIC(12, 2) NOT NULL
+);
+
 CREATE TABLE TB_CELULAR (
     id_celular int identity,
     nr_ddd     numeric(3) NOT NULL,
@@ -25,9 +38,11 @@ CREATE TABLE TB_USUARIO (
 ALTER TABLE TB_USUARIO ADD CONSTRAINT un_cpf_usuario UNIQUE ( nr_cpf );
 
 ALTER TABLE tb_usuario
-    ADD CONSTRAINT fk_usuario_cel FOREIGN KEY ( id_celular )
-        REFERENCES tb_celular ( id_celular );
+ADD CONSTRAINT fk_usuario_cel FOREIGN KEY ( id_celular )
+REFERENCES tb_celular ( id_celular );
 
+
+-- Dados para inserção
 
 
 INSERT INTO TB_CELULAR (nr_ddd, nr_celular) VALUES (11, 987654321);
@@ -35,28 +50,19 @@ INSERT INTO TB_CELULAR (nr_ddd, nr_celular) VALUES (11, 999998888);
 INSERT INTO TB_CELULAR (nr_ddd, nr_celular) VALUES (21, 977776666);
 
 
+INSERT INTO TB_USUARIO (id_celular, nr_cpf, ds_nome_completo, dt_nascimento, st_visao, ds_email, st_cadastro, dt_cadastro) 
+VALUES (2, 12312312387, 'Tony Stark', '2020-12-15', 'Baixa Visão', 'theboss@starkindustries.com',1,GETDATE());
 
 
 
-INSERT INTO TB_USUARIO (
-    id_celular,
-    nr_cpf,
-    ds_nome_completo,
-    dt_nascimento,
-    st_visao,
-    ds_email,
-    st_cadastro,
-    dt_cadastro) VALUES (
-    2,
-    12312312387,
-    'Tony Stark',
-    '2020-12-15',
-    'Baixa Visão',
-    'theboss@starkindustries.com',
-    1,
-    GETDATE());
+INSERT INTO TB_TRANSACAO(id_compra, dt_transacao, st_parcelado, st_transacao, vl_total_cartao) 
+VALUES (1, GETDATE(), 0, 'APROVADO', 500000);
+    
+INSERT INTO TB_TRANSACAO(id_compra, dt_transacao, st_parcelado, nr_parcelas, vl_parcelas, st_transacao, vl_total_cartao) 
+VALUES (2, 2, GETDATE(), 3, 87500, 'APROVADO', 262500);
 
-select * from [dbo].[TB_USUARIO]
+INSERT INTO TB_TRANSACAO(id_compra,dt_transacao,st_parcelado,st_transacao,vl_total_cartao) 
+VALUES (3,GETDATE(),0,'RECUSADO',29.90);
 
 
 
