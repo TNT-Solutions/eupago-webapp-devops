@@ -1,7 +1,7 @@
 
 -- Criação das tabelas
 CREATE TABLE TB_TRANSACAO (
-    id_trasancao    int identity,
+    id_trasacao    int identity,
     id_compra       numeric(4) NOT NULL,
     dt_transacao    DATETIME NOT NULL,
     st_parcelado    CHAR(1) NOT NULL,
@@ -53,6 +53,13 @@ INSERT INTO TB_CELULAR (nr_ddd, nr_celular) VALUES (21, 977776666);
 INSERT INTO TB_USUARIO (id_celular, nr_cpf, ds_nome_completo, dt_nascimento, st_visao, ds_email, st_cadastro, dt_cadastro) 
 VALUES (2, 12312312387, 'Tony Stark', '2020-12-15', 'Baixa Visão', 'theboss@starkindustries.com',1,GETDATE());
 
+INSERT INTO TB_USUARIO (id_celular, nr_cpf, ds_nome_completo, dt_nascimento, st_visao, ds_email, st_cadastro, dt_cadastro) 
+VALUES (2, 12312312387, 'Messi Ronaldo', '1999-12-11', 'Baixa Visão', 'messi@gmail.com',1,GETDATE());
+
+INSERT INTO TB_USUARIO (id_celular, nr_cpf, ds_nome_completo, dt_nascimento, st_visao, ds_email, st_cadastro, dt_cadastro) 
+VALUES (2, 12312312387, 'Cap Nasc', '1987-12-09', 'Baixa Visão', 'cptnasc@fiap.com',1,GETDATE());
+
+
 
 
 INSERT INTO TB_TRANSACAO(id_compra, dt_transacao, st_parcelado, st_transacao, vl_total_cartao) 
@@ -65,5 +72,11 @@ INSERT INTO TB_TRANSACAO(id_compra,dt_transacao,st_parcelado,st_transacao,vl_tot
 VALUES (3,GETDATE(),0,'RECUSADO',29.90);
 
 
+UPDATE TB_TRANSACAO SET st_transacao = 'APROVADO' where id_trasacao = 1;
+UPDATE TB_TRANSACAO SET vl_parcelas = '10' where id_trasacao = 1;
 
+UPDATE TB_USUARIO SET nr_cpf = '12312312387' where id_usuario = 3;
+UPDATE TB_USUARIO SET ds_nome_completo = 'Felipe Messi' where id_usuario = 2;
 
+UPDATE TB_CELULAR SET nr_ddd = '21' where id_celular = 1;
+UPDATE TB_CELULAR SET nr_celular = '987686301' where id_celular = 2;
